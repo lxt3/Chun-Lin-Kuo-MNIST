@@ -32,7 +32,7 @@ parser.add_argument('-sigma_prior',type=float, default = torch.tensor(np.exp(-3)
 parser.add_argument('-n_mc', type=int, default = 5)
 parser.add_argument('-n_input', type=int , default= 784)
 
-args = parser.parse_args()
+args = parser.parse_args([])
 
 
 # MNIST dataset
