@@ -249,16 +249,23 @@ for epoch in range(args.epochs):
         free_params(decoder)
         free_params(encoder)
         frozen_params(discriminator)
+
         enc_kl, dec_kl, enc_log_likelihood, dec_log_likelihood, rec_scores, sam_scores = forward_pass_samples(x, real_labels)
         enc_loss = criterion_reW(enc_kl, i, enc_log_likelihood)
-        dec_loss = criterion_reW(dec_kl, i, dec_log_likelihood)
+        # dec_loss = criterion_reW(dec_kl, i, dec_log_likelihood)
 
         reset_grad()
-        enc_loss.backward(retain_graph=True)
+        enc_loss.backward()
+        # enc_loss.backward(retain_graph=True)
         enc_optimizer.step()
 
+        frozen_params(encoder)
+
         reset_grad()
-        dec_loss.backward(retain_graph=True)
+        enc_kl, dec_kl, enc_log_likelihood, dec_log_likelihood, rec_scores, sam_scores = forward_pass_samples(x.detach(), real_labels)
+        dec_loss = criterion_reW(dec_kl, i, dec_log_likelihood)
+        dec_loss.backward() 
+        # dec_loss.backward(retain_graph=True)
         dec_optimizer.step()
 
         # ================================================================== #
